@@ -1,7 +1,6 @@
 // Compt for copying as a template
 // This compt is used for...
 
-import Promise from 'bluebird'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Radium from 'radium'
@@ -18,7 +17,7 @@ import { savePostsToRedux } from '../../actions/posts/posts_actions'
 import { saveVotesToRedux } from '../../actions/votes/votes_actions'
 import moment from 'moment'
 
-class TopPosts extends Component {
+class TrendingPosts extends Component {
 
   constructor() {
 		super()
@@ -45,25 +44,35 @@ class TopPosts extends Component {
   }
 
   submitVote(v){
-    this.setState({
-      pressed: !this.state.pressed,
-    })
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
       }
       else {
         console.log('votesubmitted')
-
         sendVotesToDB({
-          user_id: this.props.login,
-          post_id: v
+          user_id: this.props.login , post_id: v
         })
-          .then(() => Promise.join(
-            getPostsFromDB().then(posts => this.props.savePostsToRedux(posts)),
-            getVotesFromDB().then(votes => this.props.saveVotesToRedux(votes))
-          ))
+        .then((data) => {
+          return getPostsFromDB()
+        })
+        .then((data) => {
+          this.props.savePostsToRedux(data)
+        })
+        .catch((err) => {
+          rej(err)
+        })
 
+        getVotesFromDB()                  // MUST FIX ASYNC, MUST GRAB AFTER SAVING TO DB
+        .then((data) => {
+          this.props.saveVotesToRedux(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        this.setState({
+          pressed: !this.state.pressed,
+        })
       }
     }
     else {
@@ -93,36 +102,13 @@ class TopPosts extends Component {
         {!this.state.loadingMore && <Button onClick={() => this.onLoadMore()}>Load more</Button>}
       </div>
     ) : null;
-    console.log(this.props.allPosts.sort((a, b) => parseInt(b.num_votes, 10) - parseInt(a.num_votes, 10)))
     return (
       <div>
-  			<h2 id='TopPostsTitle' style={comStyles().topicName}><br/>TOP POSTS</h2>
-        <div id='TopPosts' style={comStyles().postsContainer}>
+  			<h2 id='TrendingPostsTitle' style={comStyles().topicName}><br/>TRENDING POSTS</h2>
+        <div id='TrendingPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />
-            <List
-              className="demo-loadmore-list"
-              loading={this.state.loading}
-              itemLayout="horizontal"
-              loadMore={loadMore}
-              dataSource={ this.props.allPosts.sort((a, b) => parseInt(b.num_votes) - parseInt(a.num_votes)).slice(0,this.state.count)}
-              renderItem={item => (
-                <List.Item
-                  actions={[
-                    <a href={item.url} >Site</a>,
-                    <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
-                      &nbsp;{item.num_votes}
-                    </Button>
-                  ]}>
-                  <List.Item.Meta
-                    avatar={<Avatar src={`https://img.busy.org/@${item.username}`} />}
-                    title={<a> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
-                    description={item.description}
-                  />
-                  <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")}</center></div>
-                </List.Item>
-              )}
-            />
+              <center>Coming soon</center>
             <br />
           </div>
         </div>
@@ -132,7 +118,7 @@ class TopPosts extends Component {
 }
 
 // defines the types of variables in this.props
-TopPosts.propTypes = {
+TrendingPosts.propTypes = {
 	history: PropTypes.object.isRequired,
   allPosts: PropTypes.array.isRequired,
   savePostsToRedux: PropTypes.func.isRequired,
@@ -141,11 +127,11 @@ TopPosts.propTypes = {
 }
 
 // for all optional props, define a default value
-TopPosts.defaultProps = {
+TrendingPosts.defaultProps = {
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TopPosts)
+const RadiumHOC = Radium(TrendingPosts)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

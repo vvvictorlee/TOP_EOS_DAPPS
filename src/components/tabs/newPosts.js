@@ -1,0 +1,188 @@
+// Compt for copying as a template
+// This compt is used for...
+
+import Promise from 'bluebird'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Radium from 'radium'
+import PropTypes from 'prop-types'
+import Rx from 'rxjs'
+import { withRouter } from 'react-router-dom'
+import {
+  List, Avatar, Button, Spin, message, Tag
+} from 'antd'
+import { sendVotesToDB } from '../../api/votes/votes_api'
+import { getPostsFromDB } from '../../api/posts/posts_api'
+import { getVotesFromDB } from '../../api/votes/votes_api'
+import { savePostsToRedux } from '../../actions/posts/posts_actions'
+import { saveVotesToRedux } from '../../actions/votes/votes_actions'
+import moment from 'moment'
+
+class NewPosts extends Component {
+
+  constructor() {
+		super()
+		this.state = {
+      loadingMore: false,
+      showLoadingMore: true,
+      loading: true,
+      count: 5,
+      color: '',
+		}
+	}
+
+  componentDidMount() {
+    this.setState({
+      loading: false,
+    })
+  }
+
+
+  onLoadMore() {
+    this.setState({
+      count: this.state.count + 5,
+    })
+  }
+
+  submitVote(v){
+    this.setState({
+      pressed: !this.state.pressed,
+    })
+    if (this.props.login) {
+      if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
+        message.warning('Cannot double vote!')
+      }
+      else {
+        console.log('votesubmitted')
+
+        sendVotesToDB({
+          user_id: this.props.login,
+          post_id: v
+        })
+          .then(() => Promise.join(
+            getPostsFromDB().then(posts => this.props.savePostsToRedux(posts)),
+            getVotesFromDB().then(votes => this.props.saveVotesToRedux(votes))
+          ))
+
+      }
+    }
+    else {
+      message.warning('You are not signed in!')
+    }
+  }
+
+  selectColor(item) {
+    if (item.state === 'LIVE') {
+      return 'green'
+    }
+    else if (item.state === 'BETA') {
+      return 'yellow'
+    }
+    else if (item.state === 'PROTOTYPE') {
+      return 'red'
+    }
+    else if (item.state === 'CONCEPT') {
+      return 'blue'
+    }
+  }
+
+	render() {
+    const loadMore = this.state.showLoadingMore ? (
+      <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
+        { this.state.loadingMore && <Spin />}
+        {!this.state.loadingMore && <Button onClick={() => this.onLoadMore()}>Load more</Button>}
+      </div>
+    ) : null;
+    return (
+      <div>
+  			<h2 id='NewPostsTitle' style={comStyles().topicName}><br/>NEW POSTS</h2>
+        <div id='NewPosts' style={comStyles().postsContainer}>
+          <div style={comStyles().postsList}>
+            <br />
+            <List
+              className="demo-loadmore-list"
+              loading={this.state.loading}
+              itemLayout="horizontal"
+              loadMore={loadMore}
+              dataSource={ this.props.allPosts.sort((a, b) => moment(b.created_at).isAfter(moment(a.created_at))).slice(0,this.state.count)}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <a href={item.url} >Site</a>,
+                    <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
+                      &nbsp;{item.num_votes ? parseInt(item.num_votes) : 0}
+                    </Button>
+                  ]}>
+                  <List.Item.Meta
+                    avatar={<Avatar src={`https://img.busy.org/@${item.username}`} />}
+                    title={<a> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
+                    description={item.description}
+                  />
+                  <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")}</center></div>
+                </List.Item>
+              )}
+            />
+            <br />
+          </div>
+        </div>
+			</div>
+		)
+	}
+}
+
+// defines the types of variables in this.props
+NewPosts.propTypes = {
+	history: PropTypes.object.isRequired,
+  allPosts: PropTypes.array.isRequired,
+  savePostsToRedux: PropTypes.func.isRequired,
+  saveVotesToRedux: PropTypes.func.isRequired,
+  allVotes: PropTypes.array.isRequired,
+}
+
+// for all optional props, define a default value
+NewPosts.defaultProps = {
+}
+
+// Wrap the prop in Radium to allow JS styling
+const RadiumHOC = Radium(NewPosts)
+
+// Get access to state from the Redux store
+const mapReduxToProps = (redux) => {
+  return {
+    allPosts: redux.posts.allPosts,
+    login: redux.login.loggedIn,
+    allVotes: redux.votes.allVotes,
+	}
+}
+
+// Connect together the Redux store with this React component
+export default withRouter(
+	connect(mapReduxToProps, {
+    savePostsToRedux,
+    saveVotesToRedux,
+	})(RadiumHOC)
+)
+
+// ===============================
+
+// the JS function that returns Radium JS styling
+const comStyles = () => {
+	return {
+		postsContainer: {
+			borderRadius: '25px',
+			backgroundColor: '#E0FFFF',
+			boxShadow: '10px 10px 5px grey',
+			marginTop: '3%',
+			marginRight: '8%',
+			marginLeft: '8%',
+      marginBottom: '3%'
+		},
+		topicName: {
+			textAlign: 'center',
+		},
+		postsList: {
+			marginRight: '5%',
+      marginLeft: '5%',
+		},
+	}
+}

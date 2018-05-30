@@ -10,20 +10,21 @@ const authHeaders = {
   }
 }
 
+export const sendVotesToDB = (voteInfo) => {
+  voteInfo.vote_id = uuid()
+  return axios.post(
+    `${POSTGRES_DB}/add_new_vote`,
+    voteInfo,
+    authHeaders
+  )
+}
+
 
 export const getVotesFromDB = () => { //get all post info for list
-  const p = new Promise((res, rej) => {
-
-    axios.post(
-      `${POSTGRES_DB}/get_all_votes`,
-      authHeaders
-    ).then((data) => {
-      console.log(data.data.votes)
-      res(data.data.votes)
-    }).catch((err) => {
-      console.log(err.response.data)
-    })
-
+  return axios.post(
+    `${POSTGRES_DB}/get_all_votes`,
+    authHeaders
+  ).then((data) => {
+    return data.data.votes
   })
-  return p
 }

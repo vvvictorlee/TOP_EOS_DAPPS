@@ -8,14 +8,20 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import axios from 'axios'
 import image from '../../../back.jpg'
+import eosimg from '../../../topeos.jpg'
 import { withRouter } from 'react-router-dom'
 import TopPosts from '../tabs/TopPosts.js'
+import NewPosts from '../tabs/NewPosts.js'
+import TrendingPosts from '../tabs/TrendingPosts.js'
 import CreatePost from '../post/CreatePost.js'
 import Login from '../login/Login.js'
 import {
 	Tabs,
 	WhiteSpace,
 } from 'antd-mobile'
+import {
+	Button, Icon
+} from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
 
 // import TopPosts from '../tabs/TopPosts.js'
@@ -24,8 +30,8 @@ import { StickyContainer, Sticky } from 'react-sticky'
 const tabs = [
   { title: 'Top Posts' },
   { title: 'New Posts' },
-  { title: 'Promoted Posts' },
-];
+  { title: 'Trending Posts' },
+]
 
 class HomePage extends Component {
 
@@ -45,22 +51,12 @@ class HomePage extends Component {
 	// 		})
 	}
 
-	renderCreatePost(){
-		return (
-			<CreatePost/>
-		)
-	}
-
-	renderTopPosts(){
-		return (
-			<TopPosts />
-		)
-	}
-
-	renderLogin(){
-		return (
-			<Login />
-		)
+	scrollWin() {
+		console.log('scroll')
+		window.scrollTo({
+		    top: 900,
+		    behavior: "smooth"
+		})
 	}
 
 	render() {
@@ -68,33 +64,44 @@ class HomePage extends Component {
 		console.log(this.props.login)
 		return (
 			<div id='HomePage' style={comStyles().container}>
-				<h1 id='titleName' style={comStyles().titleName}><br/>TOP EOS DAPPS</h1>
+				<div style={comStyles().topPart}>
+					<p id='titleName' style={comStyles().titleName}><br/><br/>TOP EOS DAPPS</p>
+					<center><Button size="large" icon='caret-down' type='default' ghost='true' shape="circle" onClick={() => this.scrollWin()}></Button></center>
+				</div>
 				<h2 style={comStyles().eosStats}>
-					<p>EOS PRICE:</p>
-					<p>EOS MARKETCAP:</p>
+					<p>EOS PRICE:  {this.props.eosPrice}</p>
+					<p>EOS MARKETCAP:  {this.props.eosCap}</p>
 				</h2>
 				<div id='main' style={comStyles().titleContainer}>
-					{this.props.login ? this.renderCreatePost() : this.renderLogin()}
-					<div id='tabs' style={comStyles().tabsContainer}>
-						<WhiteSpace />
-				    <StickyContainer>
-				      <Tabs tabs={tabs}
-				        initalPage={'t2'}
-								onChange={(e) => console.log(e)}>
-				        <div style={{  backgroundColor: '#ADD8E6' }}>
-									{this.renderTopPosts()}
-				        </div>
-				        <div style={{  backgroundColor: '#ADD8E6' }}>
-
-				        </div>
-				        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '250px', backgroundColor: '#ADD8E6' }}>
-				          Content of third tab
-				        </div>
-				      </Tabs>
-				    </StickyContainer>
-				    <WhiteSpace />
-					</div>
+					{
+						this.props.login
+						?
+						<CreatePost />
+						:
+						<Login />
+					}
+			    <StickyContainer>
+			      <Tabs
+							tabs={tabs}
+			        initalPage={'t2'}
+							onChange={(e) => console.log(e)}>
+			        <div style={comStyles().insideTabs}>
+								<TopPosts />
+			        </div>
+			        <div style={comStyles().insideTabs}>
+								<NewPosts />
+			        </div>
+			        <div style={comStyles().insideTabs}>
+			          <TrendingPosts />
+			        </div>
+			      </Tabs>
+			    </StickyContainer>
 				</div>
+				<center style={{marginBottom: '1%'}}>
+					Donations <br/>
+					BTC: skjdnflsmdf <br/>
+					EOS: jaksdnasdna
+				</center>
 			</div>
 		)
 	}
@@ -103,7 +110,8 @@ class HomePage extends Component {
 // defines the types of variables in this.props
 HomePage.propTypes = {
 	history: PropTypes.object.isRequired,
-	
+  eosPrice: PropTypes.number.isRequired,
+	eosCap: PropTypes.string.isRequired,
 }
 
 // for all optional props, define a default value
@@ -118,6 +126,8 @@ const RadiumHOC = Radium(HomePage)
 const mapReduxToProps = (redux) => {
 	return {
 		login: redux.login.loggedIn,
+    eosPrice: redux.eos.eosPrice,
+		eosCap: redux.eos.eosCap,
 		// posts: redux.posts.allPosts,
 		// votes: redux.votes.allVotes,
 		// users: redux.users.allUsers,
@@ -137,17 +147,21 @@ export default withRouter(
 const comStyles = () => {
 	return {
 		container: {
-			backgroundImage: 'url('+image+')',
+			background: '#ee0979',
+			background: '-webkit-linear-gradient(to right, #ff6a00, #ee0979)',
+			background: 'linear-gradient(to right, #ff6a00, #ee0979)',
 			height: '100%',
 		},
 		titleName: {
 			color: 'white',
 			textAlign: 'center',
+			fontSize: '450%',
 		},
 		eosStats: {
 			color: 'white',
 			display: 'flex',
 			justifyContent: 'space-around',
+			marginTop: '3%'
 		},
 		titleContainer: {
 			display: 'flex',
@@ -158,18 +172,22 @@ const comStyles = () => {
 			color: 'black',
 			marginRight: '8%',
 			marginLeft: '8%',
-			marginBottom:'4%',
+			marginBottom: '1%',
 			borderRadius: '25px',
 		},
-		tabsContainer: {
-			display: 'flex',
-			justifyContent: 'space-around',
-			flexDirection: 'column',
-			backgroundColor: '#ADD8E6',
-			fontFamily: 'serif',
-			color: 'black',
-			marginBottom:'4%',
-			borderRadius: '25px',
+		insideTabs: {
+			background: '#7F7FD5',
+      background: '-webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
+      background: 'linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
+			borderBottomLeftRadius: '25px',
+			borderBottomRightRadius: '25px',
+			height: '100%',
+		},
+		topPart: {
+			background: '#7F7FD5',
+      background: '-webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
+      background: 'linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
+			height: '500px',
 		},
 	}
 }

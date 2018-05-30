@@ -3,7 +3,7 @@ import {
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
-  allVotes: null,
+  allVotes: [],
 }
 
 export default (state = INITIAL_STATE, action) => {
