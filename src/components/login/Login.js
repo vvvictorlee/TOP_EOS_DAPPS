@@ -70,7 +70,7 @@ class Login extends Component {
 					<div>
 						<FormItem>
 								<Input
-								prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
 								placeholder="Username"
 								value={this.state.username}
 								onChange={(e) => this.setState({ username: e.target.value })}
@@ -78,7 +78,7 @@ class Login extends Component {
 						</FormItem>
 						<FormItem>
 							<Input
-								prefix={<Icon type="form" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
 								placeholder="Password"
 								value={this.state.password}
 								onChange={(e) => this.setState({ password: e.target.value })}
@@ -132,8 +132,8 @@ const comStyles = () => {
 			borderRadius: '25px',
 			backgroundColor: 'ADD8E6',
 			marginBottom:'3%',
-			marginRight: '8%',
-			marginLeft: '8%',
+			marginRight: '40%',
+			marginLeft: '40%',
       textAlign: 'center',
 		},
 	}

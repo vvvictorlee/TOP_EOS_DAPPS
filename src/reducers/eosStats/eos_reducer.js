@@ -1,18 +1,25 @@
 import {
-  LOGGED_IN,
+  SAVE_EOS_PRICE,
+  SAVE_EOS_CAP,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
-  loggedIn: '',
+  eosPrice: 0,
+  eosCap: 0,
 }
 
 export default (state = INITIAL_STATE, action) => {
   console.log(action.payload)
 	switch (action.type) {
-    case LOGGED_IN:
+    case SAVE_EOS_PRICE:
       return {
         ...state,
-        loggedIn: action.payload,
+        eosPrice: action.payload,
+      }
+    case SAVE_EOS_CAP:
+      return {
+        ...state,
+        eosCap: action.payload,
       }
 		default:
 			return {

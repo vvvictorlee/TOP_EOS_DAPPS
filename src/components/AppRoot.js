@@ -17,18 +17,22 @@ import 'antd-mobile/dist/antd-mobile.css'
 import 'antd/dist/antd.css'
 import AppRootMechanics from './AppRootMechanics'
 import HomePage from './pages/HomePage'
-
-
+import About from './pages/About'
+import Headerbar from './Headerbar'
 
 class AppRoot extends Component {
 
 	render() {
     return (
-      <Switch>
+      <div>
+        <Headerbar />
+        <Switch>
 
-        <Route exact path='/' render={HomePage} />
+          <Route exact path='/' render={HomePage} />
+          <Route exact path='/About' render={About} />
 
-      </Switch>
+        </Switch>
+      </div>
     )
 	}
 }

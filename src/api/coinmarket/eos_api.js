@@ -1,3 +1,4 @@
+
 // This file sets our API URLS used throughout the app
 // toggle these to access development versus production servers
 import { POSTGRES_DB } from '../API_URLS'
@@ -10,39 +11,34 @@ const authHeaders = {
   }
 }
 
-export const sendPostToDB = (postInfo) => { //get all post info for list
+
+export const getEosPrice = () => { //get all post info for list
   const p = new Promise((res, rej) => {
-    console.log(postInfo)
-    postInfo.post_id = uuid()
-    console.log(postInfo)
-    axios.post(
-      `${POSTGRES_DB}/add_new_post`,
-      postInfo,
+    axios.get(
+      `https://api.coinmarketcap.com/v2/ticker/1765/`,
       authHeaders
     ).then((data) => {
-      console.log(data)
-      res(data)
+      res(data.data.data.quotes.USD.price)
     }).catch((err) => {
-      console.log(err.response.data)
+      console.log(err)
+      rej(err)
     })
 
   })
   return p
 }
 
-
-export const getPostsFromDB = () => { //get all post info for list
+export const getEosCap = () => { //get all post info for list
   const p = new Promise((res, rej) => {
-
-    axios.post(
-      `${POSTGRES_DB}/get_all_posts`,
+    axios.get(
+      `https://api.coinmarketcap.com/v2/ticker/1765/`,
       authHeaders
     ).then((data) => {
-      console.log(data)
-      console.log(data.data.posts)
-      res(data.data.posts)
+      console.log(data.data.data.quotes.USD.market_cap)
+      res(data.data.data.quotes.USD.market_cap)
     }).catch((err) => {
-      console.log(err.response.data)
+      console.log(err)
+      rej(err)
     })
 
   })

@@ -1,3 +1,3 @@
 
 
-export const POSTGRES_DB = 'https://e679ad72.ngrok.io'
+export const POSTGRES_DB = 'https://0603b7f4.ngrok.io'
