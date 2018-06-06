@@ -179,6 +179,7 @@ const comStyles = () => {
 		},
 		topicName: {
 			textAlign: 'center',
+      fontSize: 30,
 		},
 		postsList: {
 			marginRight: '5%',

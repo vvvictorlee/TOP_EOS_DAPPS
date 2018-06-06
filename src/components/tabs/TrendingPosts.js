@@ -1,6 +1,7 @@
 // Compt for copying as a template
 // This compt is used for...
 
+import Promise from 'bluebird'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Radium from 'radium'
@@ -44,35 +45,25 @@ class TrendingPosts extends Component {
   }
 
   submitVote(v){
+    this.setState({
+      pressed: !this.state.pressed,
+    })
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
       }
       else {
         console.log('votesubmitted')
-        sendVotesToDB({
-          user_id: this.props.login , post_id: v
-        })
-        .then((data) => {
-          return getPostsFromDB()
-        })
-        .then((data) => {
-          this.props.savePostsToRedux(data)
-        })
-        .catch((err) => {
-          rej(err)
-        })
 
-        getVotesFromDB()                  // MUST FIX ASYNC, MUST GRAB AFTER SAVING TO DB
-        .then((data) => {
-          this.props.saveVotesToRedux(data)
+        sendVotesToDB({
+          user_id: this.props.login,
+          post_id: v
         })
-        .catch((err) => {
-          console.log(err)
-        })
-        this.setState({
-          pressed: !this.state.pressed,
-        })
+          .then(() => Promise.join(
+            getPostsFromDB().then(posts => this.props.savePostsToRedux(posts)),
+            getVotesFromDB().then(votes => this.props.saveVotesToRedux(votes))
+          ))
+
       }
     }
     else {
@@ -108,7 +99,18 @@ class TrendingPosts extends Component {
         <div id='TrendingPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />
-              <center>Coming soon</center>
+            <List
+              className="demo-loadmore-list"
+              loading={this.state.loading}
+              itemLayout="horizontal"
+              loadMore={loadMore}
+              dataSource={ [1] }
+              renderItem={item => (
+                <List.Item>
+                  Coming soon...
+                </List.Item>
+              )}
+            />
             <br />
           </div>
         </div>
@@ -166,6 +168,7 @@ const comStyles = () => {
 		},
 		topicName: {
 			textAlign: 'center',
+      fontSize: 30,
 		},
 		postsList: {
 			marginRight: '5%',

@@ -19,6 +19,8 @@ import AppRootMechanics from './AppRootMechanics'
 import HomePage from './pages/HomePage'
 import About from './pages/About'
 import Headerbar from './Headerbar'
+import Post from './pages/Post'
+import Success from './login/Success'
 
 class AppRoot extends Component {
 
@@ -27,10 +29,10 @@ class AppRoot extends Component {
       <div>
         <Headerbar />
         <Switch>
-
+          <Route exact path='/Success' render={Success} />
           <Route exact path='/' render={HomePage} />
           <Route exact path='/About' render={About} />
-
+          <Route exact path='/Post' render={Post} />
         </Switch>
       </div>
     )
