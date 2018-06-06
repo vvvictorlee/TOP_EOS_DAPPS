@@ -2,7 +2,8 @@ import {
   GET_POSTS,
   SAVE_TOP_POSTS,
   SAVE_NEW_POSTS,
-  SAVE_TRENDING_POSTS
+  SAVE_TRENDING_POSTS,
+  SAVE_SELECTED_POST,
 } from '../action_types'
 
 export const savePostsToRedux = (postsData) => {
@@ -38,6 +39,15 @@ export const saveTrendingPostsToRedux = (trendingPosts) => {
     dispatch({
       type: SAVE_TRENDING_POSTS,
       payload: trendingPosts,
+    })
+  }
+}
+
+export const saveSelectedPostToRedux = (selectedPost) => {
+  return (dispatch) => {
+    dispatch({
+      type: SAVE_SELECTED_POST,
+      payload: selectedPost,
     })
   }
 }

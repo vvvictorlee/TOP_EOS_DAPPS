@@ -47,3 +47,21 @@ export const getUsersFromDB = () => { //get all post info for list
   })
   return p
 }
+
+export const checkUserInDB = (username) => { //get all post info for list
+  const p = new Promise((res, rej) => {
+
+    axios.post(
+      `${POSTGRES_DB}/check_username`,
+      username,
+      authHeaders
+    ).then((data) => {
+      console.log(data.data.users)
+      res(data.data.users)
+    }).catch((err) => {
+      console.log(err.response.data)
+    })
+
+  })
+  return p
+}

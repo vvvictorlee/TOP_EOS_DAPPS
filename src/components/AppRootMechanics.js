@@ -9,9 +9,12 @@ import { savePostsToRedux, saveTopPostsToRedux, saveNewPostsToRedux } from '../a
 import { saveEosPriceToRedux, saveEosCapToRedux } from '../actions/eosStats/eos_actions'
 import { saveUsersToRedux } from '../actions/users/users_actions'
 import { saveLoginToRedux } from '../actions/users/login_actions'
+import { saveCommentsToRedux } from '../actions/comments/comments_actions'
 import { getUsersFromDB } from '../api/users/users_api'
 import { getPostsFromDB } from '../api/posts/posts_api'
 import { getVotesFromDB } from '../api/votes/votes_api'
+import { getCommentsFromDB } from '../api/comments/comments_api'
+
 import { getEosPrice, getEosCap } from '../api/coinmarket/eos_api.js'
 import moment from 'moment'
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
@@ -24,6 +27,7 @@ export default (ComposedComponent) => {
 			this.getAllUsersAndSaveToRedux()
 			this.getEosPriceAndSaveToRedux()
 			this.getAllVotesAndSaveToRedux()
+			this.getAllCommentsAndSaveToRedux()
 		}
 
 		componentDidUpdate(prevProps, prevState) {
@@ -31,6 +35,13 @@ export default (ComposedComponent) => {
 	      this.getAllPostsAndSaveToRedux()
 	    }
 	  }
+
+		getAllCommentsAndSaveToRedux() {
+			getCommentsFromDB()
+				.then((data) => {
+					this.props.saveCommentsToRedux(data)
+				})
+		}
 
 		getAllVotesAndSaveToRedux() {
 			getVotesFromDB()
@@ -120,6 +131,7 @@ export default (ComposedComponent) => {
 			saveEosPriceToRedux,
 			saveEosCapToRedux,
 			saveVotesToRedux,
+			saveCommentsToRedux,
     })(AppRootMechanics)
 	)
 }

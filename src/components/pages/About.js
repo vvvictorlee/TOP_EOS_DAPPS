@@ -18,15 +18,21 @@ class About extends Component {
 
 	render() {
 		return (
-			<div id='About' style={comStyles().container}>
-        <div style={comStyles().titleName}>
-          TOP EOS DAPPS
-        </div>
+			<div id='HomePage' style={comStyles().container}>
+				<br/>
+				<h2 style={comStyles().eosStats}>
+					<p>About</p>
+				</h2>
 				<div id='main' style={comStyles().titleContainer}>
-          <center>About</center>
-          This website is a community driven bulletin board for keeping up with new decentralized applications.
-          Users must be signed in via the steem blockchain in order to create posts and upvote.
-        </div>
+					<div>
+						This website is dope
+					</div>
+				</div>
+				<center style={{marginBottom: '1%'}}>
+					Donations <br/>
+					BTC: skjdnflsmdf <br/>
+					EOS: jaksdnasdna
+				</center>
 			</div>
 		)
 	}
@@ -64,11 +70,18 @@ export default withRouter(
 // the JS function that returns Radium JS styling
 const comStyles = () => {
 	return {
-    container: {
-			backgroundImage: 'url('+image+')',
-			height: '100%',
+		container: {
+			background: '#ee0979',
+			background: '-webkit-linear-gradient(to right, #ff6a00, #ee0979)',
+			background: 'linear-gradient(to right, #ff6a00, #ee0979)',
+			height: '100vh',
 		},
-    titleContainer: {
+		eosStats: {
+			color: 'white',
+			display: 'flex',
+			justifyContent: 'space-around',
+		},
+		titleContainer: {
 			display: 'flex',
 			justifyContent: 'space-around',
 			flexDirection: 'column',
@@ -79,10 +92,6 @@ const comStyles = () => {
 			marginLeft: '8%',
 			marginBottom: '1%',
 			borderRadius: '25px',
-		},
-    titleName: {
-			color: 'white',
-			textAlign: 'center',
 		},
 	}
 }

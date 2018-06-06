@@ -3,6 +3,7 @@ import {
   SAVE_TOP_POSTS,
   SAVE_NEW_POSTS,
   SAVE_TRENDING_POSTS,
+  SAVE_SELECTED_POST,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -10,6 +11,7 @@ const INITIAL_STATE = {
   topPosts: [],
   newPosts: [],
   trendingPosts: [],
+  selectedPost: [],
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -33,6 +35,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         promotedPosts: action.payload,
+      }
+    case SAVE_SELECTED_POST:
+      return {
+        ...state,
+        selectedPost: action.payload,
       }
     default:
 			return {

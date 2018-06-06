@@ -14,7 +14,7 @@ import {
 import { sendVotesToDB } from '../../api/votes/votes_api'
 import { getPostsFromDB } from '../../api/posts/posts_api'
 import { getVotesFromDB } from '../../api/votes/votes_api'
-import { savePostsToRedux } from '../../actions/posts/posts_actions'
+import { savePostsToRedux, saveSelectedPostToRedux } from '../../actions/posts/posts_actions'
 import { saveVotesToRedux } from '../../actions/votes/votes_actions'
 import moment from 'moment'
 
@@ -86,6 +86,11 @@ class TopPosts extends Component {
     }
   }
 
+  changeSelected(post) {
+    this.props.saveSelectedPostToRedux(post)
+    this.props.history.push('/Post')
+  }
+
 	render() {
     const loadMore = this.state.showLoadingMore ? (
       <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
@@ -93,7 +98,6 @@ class TopPosts extends Component {
         {!this.state.loadingMore && <Button onClick={() => this.onLoadMore()}>Load more</Button>}
       </div>
     ) : null;
-    console.log(this.props.allPosts.sort((a, b) => parseInt(b.num_votes, 10) - parseInt(a.num_votes, 10)))
     return (
       <div>
   			<h2 id='TopPostsTitle' style={comStyles().topicName}><br/>TOP POSTS</h2>
@@ -116,7 +120,7 @@ class TopPosts extends Component {
                   ]}>
                   <List.Item.Meta
                     avatar={<Avatar src={`https://img.busy.org/@${item.username}`} />}
-                    title={<a> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
+                    title={<a onClick={(e) => this.changeSelected(item)}> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
                     description={item.description}
                   />
                   <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")}</center></div>
@@ -138,6 +142,7 @@ TopPosts.propTypes = {
   savePostsToRedux: PropTypes.func.isRequired,
   saveVotesToRedux: PropTypes.func.isRequired,
   allVotes: PropTypes.array.isRequired,
+  saveSelectedPostToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -161,6 +166,7 @@ export default withRouter(
 	connect(mapReduxToProps, {
     savePostsToRedux,
     saveVotesToRedux,
+    saveSelectedPostToRedux,
 	})(RadiumHOC)
 )
 
@@ -180,6 +186,8 @@ const comStyles = () => {
 		},
 		topicName: {
 			textAlign: 'center',
+      fontSize: 30,
+
 		},
 		postsList: {
 			marginRight: '5%',

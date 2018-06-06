@@ -15,6 +15,7 @@ import NewPosts from '../tabs/NewPosts.js'
 import TrendingPosts from '../tabs/TrendingPosts.js'
 import CreatePost from '../post/CreatePost.js'
 import Login from '../login/Login.js'
+import Particles from 'particlesjs'
 import {
 	Tabs,
 	WhiteSpace,
@@ -23,6 +24,7 @@ import {
 	Button, Icon
 } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
+
 
 // import TopPosts from '../tabs/TopPosts.js'
 // import NewPosts from '../tabs/NewPosts.js'
@@ -49,12 +51,16 @@ class HomePage extends Component {
 	// 		.catch((err) => {
 	// 			console.log(err)
 	// 		})
+		console.log(localStorage.getItem('username'))
+		console.log(localStorage.getItem('access_token'))
 	}
+
+
 
 	scrollWin() {
 		console.log('scroll')
 		window.scrollTo({
-		    top: 900,
+		    top: 670,
 		    behavior: "smooth"
 		})
 	}
