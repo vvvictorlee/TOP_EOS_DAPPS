@@ -30,9 +30,9 @@ import { StickyContainer, Sticky } from 'react-sticky'
 // import NewPosts from '../tabs/NewPosts.js'
 
 const tabs = [
-  { title: 'Top Posts' },
-  { title: 'New Posts' },
-  { title: 'Trending Posts' },
+  { title: 'TOP ƉAPPS' },
+  { title: 'NEW ƉAPPS' },
+  { title: 'TRENDING ƉAPPS' },
 ]
 
 class HomePage extends Component {
@@ -90,7 +90,7 @@ class HomePage extends Component {
 		return (
 			<div id='HomePage' style={comStyles().container}>
 				<div style={comStyles().topPart}>
-					<p id='titleName' style={comStyles().titleName}><br/><br/>TOP EOS DAPPS</p>
+					<p id='titleName' style={comStyles().titleName}><br/><br/>TOP EOS ƉAPPS</p>
 					<center><Button size="large" icon='caret-down' type='default' ghost='true' shape="circle" onClick={() => this.scrollWin()}></Button></center>
 				</div>
 				<h2 style={comStyles().eosStats}>

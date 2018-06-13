@@ -97,7 +97,7 @@ class TrendingPosts extends Component {
     ) : null;
     return (
       <div>
-  			<h2 id='TrendingPostsTitle' style={comStyles().topicName}><br/>TRENDING POSTS</h2>
+  			<h2 id='TrendingPostsTitle' style={comStyles().topicName}><br/>TRENDING ƉAPPS</h2>
         <div id='TrendingPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />

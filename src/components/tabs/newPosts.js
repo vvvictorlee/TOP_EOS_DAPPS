@@ -97,7 +97,7 @@ class NewPosts extends Component {
     ) : null;
     return (
       <div>
-  			<h2 id='NewPostsTitle' style={comStyles().topicName}><br/>NEW POSTS</h2>
+  			<h2 id='NewPostsTitle' style={comStyles().topicName}><br/>NEW ƉAPPS</h2>
         <div id='NewPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />

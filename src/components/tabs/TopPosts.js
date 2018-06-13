@@ -104,7 +104,7 @@ class TopPosts extends Component {
     ) : null;
     return (
       <div>
-  			<h2 id='TopPostsTitle' style={comStyles().topicName}><br/>TOP POSTS</h2>
+  			<h2 id='TopPostsTitle' style={comStyles().topicName}><br/>TOP ƉAPPS</h2>
         <div id='TopPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />

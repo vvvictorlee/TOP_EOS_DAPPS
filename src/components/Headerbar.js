@@ -32,7 +32,7 @@ class Headerbar extends Component {
           theme='dark'
           mode="horizontal"
         >
-          <Menu.Item key='1' onClick={() => this.props.history.push('/')}><Icon type="home" />TOP EOS DAPPS</Menu.Item>
+          <Menu.Item key='1' onClick={() => this.props.history.push('/')}><Icon type="home" />TOP EOS ƉAPPS</Menu.Item>
 				  <Menu.Item key='2' onClick={() => this.props.history.push('/About')}><Icon type="info-circle-o" />ABOUT</Menu.Item>
         </Menu>
 			</div>
