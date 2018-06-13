@@ -10,12 +10,14 @@ import { saveEosPriceToRedux, saveEosCapToRedux } from '../actions/eosStats/eos_
 import { saveUsersToRedux } from '../actions/users/users_actions'
 import { saveLoginToRedux } from '../actions/users/login_actions'
 import { saveCommentsToRedux } from '../actions/comments/comments_actions'
-import { getUsersFromDB } from '../api/users/users_api'
+import { getUsersFromDB, checkUserInDB } from '../api/users/users_api'
 import { getPostsFromDB } from '../api/posts/posts_api'
 import { getVotesFromDB } from '../api/votes/votes_api'
+import { getComvotesFromDB } from '../api/votes/comvotes_api'
 import { getCommentsFromDB } from '../api/comments/comments_api'
-
+import { saveComvotesToRedux } from '../actions/votes/comvotes_actions'
 import { getEosPrice, getEosCap } from '../api/coinmarket/eos_api.js'
+import { sc2api } from '../api/steemconnect/steem_api'
 import moment from 'moment'
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
 // and returns a new component with added functionality
@@ -23,14 +25,41 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
 		componentWillMount() {
+			this.getEosPriceAndSaveToRedux()
+			this.isLoggedIn()
 			this.getAllPostsAndSaveToRedux()
 			this.getAllUsersAndSaveToRedux()
-			this.getEosPriceAndSaveToRedux()
 			this.getAllVotesAndSaveToRedux()
 			this.getAllCommentsAndSaveToRedux()
+			this.getAllComvotesAndSaveToRedux()
+			setInterval(() => this.getEosPriceAndSaveToRedux(), 10000)
+			setInterval(() => this.isLoggedIn(), 10000)
+			setInterval(() => this.getAllPostsAndSaveToRedux(), 10000)
+			setInterval(() => this.getAllUsersAndSaveToRedux(), 10000)
+			setInterval(() => this.getAllVotesAndSaveToRedux(), 10000)
+			setInterval(() => this.getAllCommentsAndSaveToRedux(), 10000)
+			setInterval(() => this.getAllComvotesAndSaveToRedux(), 10000)
+		}
+
+		isLoggedIn() {
+			const username = localStorage.getItem('username')
+			const access_token = localStorage.getItem('access_token')
+			if ( username && access_token) {
+				checkUserInDB({username: username})
+		      .then((data) => {
+							console.log(data)
+		          this.props.saveLoginToRedux(data[0].user_id)
+		      })
+					.then(() => {
+						sc2api.setAccessToken(access_token)
+					})
+			}
 		}
 
 		componentDidUpdate(prevProps, prevState) {
+			console.log('did update')
+			console.log(localStorage.getItem('username'))
+			console.log(localStorage.getItem('access_token'))
 	    if (prevProps.allPosts !== this.props.allPosts ) {
 	      this.getAllPostsAndSaveToRedux()
 	    }
@@ -43,6 +72,15 @@ export default (ComposedComponent) => {
 				})
 		}
 
+		getAllComvotesAndSaveToRedux() {
+			console.log('getallcomvotes')
+			getComvotesFromDB()
+				.then((data) => {
+					console.log('getallcomvotes2')
+					this.props.saveComvotesToRedux(data)
+				})
+		}
+
 		getAllVotesAndSaveToRedux() {
 			getVotesFromDB()
 				.then((data) => {
@@ -52,6 +90,7 @@ export default (ComposedComponent) => {
 		}
 
 		getEosPriceAndSaveToRedux(){
+			console.log('geteos')
 			getEosPrice()
 				.then((data) => {
 					console.log(data)
@@ -107,6 +146,7 @@ export default (ComposedComponent) => {
 		saveNewPostsToRedux: PropTypes.func.isRequired,
 		saveEosPriceToRedux: PropTypes.func.isRequired,
 		saveVotesToRedux: PropTypes.func.isRequired,
+		saveLoginToRedux: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -132,6 +172,8 @@ export default (ComposedComponent) => {
 			saveEosCapToRedux,
 			saveVotesToRedux,
 			saveCommentsToRedux,
+			saveComvotesToRedux,
+			saveLoginToRedux,
     })(AppRootMechanics)
 	)
 }

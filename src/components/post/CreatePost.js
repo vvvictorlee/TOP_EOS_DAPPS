@@ -16,14 +16,20 @@ import {
   DatePicker,
   Tooltip,
   Dropdown,
-  Menu
+  Menu,
+  Checkbox,
+  message,
+
 } from 'antd'
 import moment from 'moment'
 import { savePostsToRedux } from '../../actions/posts/posts_actions'
 import { sendPostToDB, getPostsFromDB } from '../../api/posts/posts_api.js'
+import { sc2api } from '../../api/steemconnect/steem_api'
+import validator from 'validator'
 
 const FormItem = Form.Item
 const { TextArea } = Input
+
 
 class CreatePost extends Component {
 
@@ -37,13 +43,35 @@ class CreatePost extends Component {
         state: 'Current State',
         url: '',
         summary: '',
+        checkbox: false,
 		}
 	}
 
+  editUrl() {
+    console.log('editUrl')
+    let goodurl = this.state.url
+    if ( !goodurl.includes('https://') && !goodurl.includes('http://')){
+      console.log('newrl')
+      goodurl = 'https://' + goodurl
+    }
+    if (validator.isURL(goodurl)){
+      return goodurl
+    }
+    else {
+      message.warning('Bad URL input')
+    }
+  }
+
   submitPost(){
-    if (this.state.topPick !== '' && this.state.releaseDate !== '' && this.state.description !== '' && this.state.state !== 'State if DApp' && this.state.url !== '' && this.state.summary !== '') {
+    const val = this.editUrl()
+    if ( val && this.state.topPick !== '' && this.state.state !== 'Current State' && this.state.releaseDate !== '' && this.state.description !== '' && this.state.state !== 'State if DApp' && this.state.url !== '' && this.state.summary !== '') {
       this.setState({pressed: true})
-      console.log(this.props.login)
+      if (this.state.checkbox) {
+        sc2api.comment('', '', this.props.login, 'testing-tester', this.state.topPick, this.state.description, '', function (err, res) {
+          console.log(err, res)
+          }
+        )
+      }
       sendPostToDB({
         user_id: this.props.login,
         title: this.state.topPick,
@@ -51,7 +79,8 @@ class CreatePost extends Component {
         description: this.state.description,
         summary: this.state.summary,
         state: this.state.state,
-        url: this.state.url,
+        url: val,
+        steemlink: this.state.checkbox,
       })
       .then((data) => {
         return getPostsFromDB()
@@ -63,11 +92,15 @@ class CreatePost extends Component {
       .catch((err) => {
         console.log(err)
       })
-      setTimeout(() => { this.setState({pressed: false}) }, 1000)
-      console.log(this.state.pressed)
+      setTimeout(() => { this.setState({pressed: false}) }, 2000)
+      message.loading('Action in progress..', 1.5)
+        .then(() => message.success('Loading finished', 1.5))
+
     }
     else {
-      alert('missing inputs bruh')
+      if (val) {
+        message.warning('Missing inputs')
+      }
     }
   }
 
@@ -109,17 +142,17 @@ class CreatePost extends Component {
     )
 		return (
       <div id='CreatePost' style={comStyles().postsContainer}>
-  			<h2 id='CreatePostTitle'><br/>CREATE POST</h2>
+  			<h2 id='CreatePostTitle' style={comStyles().title}><br/>CREATE POST<br/></h2>
         <Form onSubmit={() => this.submitPost()} >
 
 					<div>
 						<FormItem>
-								<Input
-  								prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
-  								placeholder="Name of DApp"
-  								value={this.state.topPick}
-  								onChange={(e) => this.setState({ topPick: e.target.value })}
-								/>
+                <Input
+                  prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Name of DApp"
+                  value={this.state.topPick}
+                  onChange={(e) => this.setState({ topPick: e.target.value })}
+                />
 						</FormItem>
             <FormItem>
 								<Input
@@ -129,30 +162,35 @@ class CreatePost extends Component {
   								onChange={(e) => this.setState({ summary: e.target.value })}
 								/>
 						</FormItem>
-						<FormItem>
-                <Dropdown overlay={menu} placement="bottomLeft">
-                  <Button>{this.state.state}</Button>
-                </Dropdown>
-		            <DatePicker placeholder="Release(d) Date" onChange={(e) => this.setState({ releaseDate: moment(e).format()})}/>
+						<FormItem >
+                <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                  <Dropdown overlay={menu} placement="bottomLeft">
+                    <Button icon='down' >{this.state.state}</Button>
+                  </Dropdown>
+  		            <DatePicker placeholder="Release(d) Date" onChange={(e) => this.setState({ releaseDate: moment(e).format()})}/>
+                </div>
 		        </FormItem>
             <FormItem>
-              <Input
-                prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Website URL"
-                value={this.state.url}
-                onChange={(e) => this.setState({ url: e.target.value }, console.log(this.state.url))}
-              />
+                <Input
+                  prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Website URL"
+                  value={this.state.url}
+                  onChange={(e) => this.setState({ url: e.target.value }, console.log(this.state.url))}
+                />
 		        </FormItem>
 						<FormItem>
-							<TextArea
-                rows={4}
-								prefix={<Icon type="form" style={{ color: 'rgba(0,0,0,.25)' }} />}
-								placeholder="Detailed description"
-								value={this.state.description}
-								onChange={(e) => this.setState({ description: e.target.value }, console.log(this.state.description))}
-							/>
+  							<TextArea
+                  rows={4}
+  								prefix={<Icon type="form" style={{ color: 'rgba(0,0,0,.25)' }} />}
+  								placeholder="Detailed description"
+  								value={this.state.description}
+  								onChange={(e) => this.setState({ description: e.target.value }, console.log(this.state.description))}
+  							/>
 						</FormItem>
-						<Button icon={this.state.pressed ? 'caret-down' : 'down'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitPost()}>Submit</Button>
+            <FormItem>
+              <Checkbox onChange={() => this.setState({checkbox: !this.state.checkbox})} defaultChecked={false} disabled>Generate post onto the Steem blockchain (Disabled temporarily)</Checkbox>
+            </FormItem>
+						<Button icon={this.state.pressed ? 'loading' : 'down'} disabled={this.state.pressed ? true : false} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitPost()}>Submit</Button>
 					</div>
 
 				</Form>
@@ -199,9 +237,12 @@ const comStyles = () => {
 			borderRadius: '25px',
 			backgroundColor: 'ADD8E6',
 			marginBottom:'3%',
-			marginRight: '8%',
-			marginLeft: '8%',
+			marginRight: '25%',
+			marginLeft: '25%',
       textAlign: 'center',
 		},
+    title: {
+      color: 'white,'
+    }
 	}
 }
