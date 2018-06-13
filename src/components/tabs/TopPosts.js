@@ -18,6 +18,7 @@ import { savePostsToRedux, saveSelectedPostToRedux } from '../../actions/posts/p
 import { saveVotesToRedux } from '../../actions/votes/votes_actions'
 import moment from 'moment'
 
+
 class TopPosts extends Component {
 
   constructor() {
@@ -45,9 +46,6 @@ class TopPosts extends Component {
   }
 
   submitVote(v){
-    this.setState({
-      pressed: !this.state.pressed,
-    })
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
@@ -91,6 +89,12 @@ class TopPosts extends Component {
     this.props.history.push('/Post')
   }
 
+  getSite(url) {
+    console.log(url)
+    const newurl = new URL(url)
+    window.open(newurl)
+  }
+
 	render() {
     const loadMore = this.state.showLoadingMore ? (
       <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
@@ -113,7 +117,7 @@ class TopPosts extends Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a href={item.url} >Site</a>,
+                    <a onClick={() => this.getSite(item.url)} >Site</a>,
                     <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
                       &nbsp;{item.num_votes}
                     </Button>
@@ -177,16 +181,16 @@ const comStyles = () => {
 	return {
 		postsContainer: {
 			borderRadius: '25px',
-			backgroundColor: '#E0FFFF',
-			boxShadow: '10px 10px 5px grey',
+			backgroundColor: 'white',
 			marginTop: '3%',
-			marginRight: '8%',
-			marginLeft: '8%',
+			marginRight: '3%',
+			marginLeft: '3%',
       marginBottom: '3%'
 		},
 		topicName: {
 			textAlign: 'center',
       fontSize: 30,
+      color: 'white',
 
 		},
 		postsList: {

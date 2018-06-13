@@ -44,12 +44,13 @@
   "dependencies": {
     "amazon-cognito-identity-js": "1.19.0",
     "amazon-cognito-js": "1.1.0",
-    "antd": "^3.5.1",
+    "antd": "^3.6.2",
     "antd-mobile": "^2.1.2",
     "aws-sdk": "2.80.0",
     "axios": "0.16.2",
     "browser-locale": "1.0.2",
     "express": "4.15.3",
+    "firebase": "^5.0.4",
     "font-awesome": "^4.7.0",
     "js-cookie": "2.1.4",
     "lodash": "4.17.4",
@@ -74,6 +75,7 @@
     "redux-thunk": "2.2.0",
     "rxjs": "5.4.0",
     "sc2-sdk": "^1.0.2",
-    "uuid": "3.0.1"
+    "uuid": "3.0.1",
+    "validator": "^10.3.0"
   }
 }

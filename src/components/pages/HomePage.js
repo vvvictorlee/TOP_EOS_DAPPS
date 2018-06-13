@@ -37,6 +37,12 @@ const tabs = [
 
 class HomePage extends Component {
 
+	constructor(){
+		super()
+		this.state = {
+			pressed: false,
+		}
+	}
 
 	 componentDidMount() {
 	// 	const header = {
@@ -65,6 +71,19 @@ class HomePage extends Component {
 		})
 	}
 
+	isPressed(){
+		if (this.state.pressed == true){
+			return (<CreatePost />)
+		}
+		else {
+			return (<div id='Login' style={comStyles().postButton}>
+								<div style={{marginTop: '25%', marginBottom: '5%'}}>
+									<Button type='primary' size='large' onClick={() => this.setState({pressed: !this.state.pressed })} >POST</Button>
+								</div>
+							</div>)
+		}
+	}
+
 	render() {
 		console.log('harro')
 		console.log(this.props.login)
@@ -82,7 +101,11 @@ class HomePage extends Component {
 					{
 						this.props.login
 						?
-						<CreatePost />
+						<div>
+				      {
+								this.isPressed()
+							}
+				    </div>
 						:
 						<Login />
 					}
@@ -104,9 +127,8 @@ class HomePage extends Component {
 			    </StickyContainer>
 				</div>
 				<center style={{marginBottom: '1%'}}>
-					Donations <br/>
-					BTC: skjdnflsmdf <br/>
-					EOS: jaksdnasdna
+					- Donations -<br/>
+					BTC: 35DErwGr4FxTox6LHArDefgz9XLFy8Hsx4 <br/>
 				</center>
 			</div>
 		)
@@ -134,9 +156,6 @@ const mapReduxToProps = (redux) => {
 		login: redux.login.loggedIn,
     eosPrice: redux.eos.eosPrice,
 		eosCap: redux.eos.eosCap,
-		// posts: redux.posts.allPosts,
-		// votes: redux.votes.allVotes,
-		// users: redux.users.allUsers,
 	}
 }
 
@@ -153,9 +172,10 @@ export default withRouter(
 const comStyles = () => {
 	return {
 		container: {
-			background: '#ee0979',
-			background: '-webkit-linear-gradient(to right, #ff6a00, #ee0979)',
-			background: 'linear-gradient(to right, #ff6a00, #ee0979)',
+			// background: '#ee0979',
+			// background: '-webkit-linear-gradient(to right, #ff6a00, #ee0979)',
+			// background: 'linear-gradient(to right, #ff6a00, #ee0979)',
+			backgroundColor: '#FFFAFA',
 			height: '100%',
 		},
 		titleName: {
@@ -164,29 +184,25 @@ const comStyles = () => {
 			fontSize: '450%',
 		},
 		eosStats: {
-			color: 'white',
+			color: 'black',
 			display: 'flex',
 			justifyContent: 'space-around',
-			marginTop: '3%'
+			marginTop: '2%'
 		},
 		titleContainer: {
 			display: 'flex',
+			boxShadow: '10px 10px 5px grey',
 			justifyContent: 'space-around',
 			flexDirection: 'column',
-			backgroundColor: '#ADD8E6',
-			fontFamily: 'serif',
-			color: 'black',
-			marginRight: '8%',
-			marginLeft: '8%',
-			marginBottom: '1%',
-			borderRadius: '25px',
-		},
-		insideTabs: {
 			background: '#7F7FD5',
       background: '-webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
       background: 'linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
-			borderBottomLeftRadius: '25px',
-			borderBottomRightRadius: '25px',
+			color: 'black',
+			marginRight: '3%',
+			marginLeft: '3%',
+			marginBottom: '1%',
+		},
+		insideTabs: {
 			height: '100%',
 		},
 		topPart: {
@@ -194,6 +210,14 @@ const comStyles = () => {
       background: '-webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
       background: 'linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5)',
 			height: '500px',
+		},
+		postButton: {
+			borderRadius: '25px',
+			backgroundColor: 'ADD8E6',
+			marginBottom:'3%',
+			marginRight: '40%',
+			marginLeft: '40%',
+      textAlign: 'center',
 		},
 	}
 }
