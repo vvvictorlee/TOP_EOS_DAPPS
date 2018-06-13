@@ -11,8 +11,6 @@ export const GET_USERS = 'GET_USERS'
 
 export const GET_COMMENTS = 'GET_COMMENTS'
 
-export const GET_COMVOTES = 'GET_COMVOTES'
-
 //
 export const LOGGED_IN = 'LOGGED_IN'
 

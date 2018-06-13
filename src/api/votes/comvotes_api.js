@@ -10,11 +10,11 @@ const authHeaders = {
   }
 }
 
-export const sendComvoteToDB = (comvoteInfo) => {
+export const sendComvotesToDB = (comvoteInfo) => {
   comvoteInfo.comvote_id = uuid()
   return axios.post(
     `${POSTGRES_DB}/add_new_comvote`,
-    comvoteInfo,
+    voteInfo,
     authHeaders
   )
 }
@@ -26,6 +26,6 @@ export const getComvotesFromDB = () => { //get all post info for list
     authHeaders
   ).then((data) => {
     console.log(data)
-    return data.data.comvotes
+    return data.data.votes
   })
 }

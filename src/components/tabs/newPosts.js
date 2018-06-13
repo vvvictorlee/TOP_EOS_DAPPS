@@ -14,7 +14,7 @@ import {
 import { sendVotesToDB } from '../../api/votes/votes_api'
 import { getPostsFromDB } from '../../api/posts/posts_api'
 import { getVotesFromDB } from '../../api/votes/votes_api'
-import { savePostsToRedux, saveSelectedPostToRedux } from '../../actions/posts/posts_actions'
+import { savePostsToRedux } from '../../actions/posts/posts_actions'
 import { saveVotesToRedux } from '../../actions/votes/votes_actions'
 import moment from 'moment'
 
@@ -45,6 +45,9 @@ class NewPosts extends Component {
   }
 
   submitVote(v){
+    this.setState({
+      pressed: !this.state.pressed,
+    })
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
@@ -83,11 +86,6 @@ class NewPosts extends Component {
     }
   }
 
-  changeSelected(post) {
-    this.props.saveSelectedPostToRedux(post)
-    this.props.history.push('/Post')
-  }
-
 	render() {
     const loadMore = this.state.showLoadingMore ? (
       <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
@@ -97,7 +95,7 @@ class NewPosts extends Component {
     ) : null;
     return (
       <div>
-  			<h2 id='NewPostsTitle' style={comStyles().topicName}><br/>NEW ƉAPPS</h2>
+  			<h2 id='NewPostsTitle' style={comStyles().topicName}><br/>NEW POSTS</h2>
         <div id='NewPosts' style={comStyles().postsContainer}>
           <div style={comStyles().postsList}>
             <br />
@@ -110,14 +108,14 @@ class NewPosts extends Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a href={item.url} target='_blank' >Site</a>,
+                    <a href={item.url} >Site</a>,
                     <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
-                      &nbsp;{item.num_votes}
+                      &nbsp;{item.num_votes ? parseInt(item.num_votes) : 0}
                     </Button>
                   ]}>
                   <List.Item.Meta
                     avatar={<Avatar src={`https://img.busy.org/@${item.username}`} />}
-                    title={<a onClick={(e) => this.changeSelected(item)}> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
+                    title={<a> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
                     description={item.description}
                   />
                   <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")}</center></div>
@@ -139,7 +137,6 @@ NewPosts.propTypes = {
   savePostsToRedux: PropTypes.func.isRequired,
   saveVotesToRedux: PropTypes.func.isRequired,
   allVotes: PropTypes.array.isRequired,
-  saveSelectedPostToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -163,7 +160,6 @@ export default withRouter(
 	connect(mapReduxToProps, {
     savePostsToRedux,
     saveVotesToRedux,
-    saveSelectedPostToRedux,
 	})(RadiumHOC)
 )
 
@@ -174,16 +170,16 @@ const comStyles = () => {
 	return {
 		postsContainer: {
 			borderRadius: '25px',
-			backgroundColor: 'white',
+			backgroundColor: '#E0FFFF',
+			boxShadow: '10px 10px 5px grey',
 			marginTop: '3%',
-			marginRight: '3%',
-			marginLeft: '3%',
+			marginRight: '8%',
+			marginLeft: '8%',
       marginBottom: '3%'
 		},
 		topicName: {
 			textAlign: 'center',
       fontSize: 30,
-      color: 'white',
 		},
 		postsList: {
 			marginRight: '5%',

@@ -1,8 +1,7 @@
 
-  export const POSTGRES_DB = 'https://asodnvqowrnvfev.website:8888'
 
-//export const POSTGRES_DB = 'https://35.196.20.125:8888'
+export const POSTGRES_DB = 'https://6cb8c837.ngrok.io'
 
-// export const POSTGRES_DB = 'https://4d192c60.ngrok.io'
 
-export const STEEM_CALLBACK = 'https://topeosdapps.com/Success/'
+
+//export const STEEMCONNECT_HOST = 'https://topeosdapps.com'

@@ -40,9 +40,7 @@ class Login extends Component {
     this.setState({
       loading: true,
     })
-    const link = sc2api.getLoginURL()
-    console.log(link)
-    window.location.href = link
+    window.location.href = 'https://v2.steemconnect.com/oauth2/authorize?client_id=topeosdapps&redirect_uri=https://localhost:5000/Success/&scope=vote,comment'
   }
 
 

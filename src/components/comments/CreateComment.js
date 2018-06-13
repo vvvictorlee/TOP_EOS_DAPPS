@@ -25,7 +25,9 @@ import { sendPostToDB, getPostsFromDB } from '../../api/posts/posts_api.js'
 const FormItem = Form.Item
 const { TextArea } = Input
 
-class CreatePost extends Component {
+
+
+class CreateComment extends Component {
 
   constructor() {
 		super()
@@ -108,8 +110,8 @@ class CreatePost extends Component {
       </Menu>
     )
 		return (
-      <div id='CreatePost' style={comStyles().postsContainer}>
-  			<h2 id='CreatePostTitle'><br/>CREATE POST</h2>
+      <div id='CreateComment' style={comStyles().postsContainer}>
+  			<h2 id='CreateCommentTitle'><br/>CREATE POST</h2>
         <Form onSubmit={() => this.submitPost()} >
 
 					<div>
@@ -162,19 +164,19 @@ class CreatePost extends Component {
 }
 
 // defines the types of variables in this.props
-CreatePost.propTypes = {
+CreateComment.propTypes = {
 	history: PropTypes.object.isRequired,
   savePostsToRedux: PropTypes.func.isRequired,
   login: PropTypes.string.isRequired,
 }
 
 // for all optional props, define a default value
-CreatePost.defaultProps = {
+CreateComment.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CreatePost)
+const RadiumHOC = Radium(CreateComment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
