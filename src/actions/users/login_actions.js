@@ -1,5 +1,6 @@
 import {
   LOGGED_IN,
+  LOGGED_USER,
 } from '../action_types'
 
 export const saveLoginToRedux = (loginData) => {
@@ -8,6 +9,15 @@ export const saveLoginToRedux = (loginData) => {
     dispatch({
       type: LOGGED_IN,
       payload: loginData,
+    })
+  }
+}
+
+export const saveLogUserToRedux = (userData) => {
+  return (dispatch) => {
+    dispatch({
+      type: LOGGED_USER,
+      payload: userData,
     })
   }
 }

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import {
   message
 } from 'antd'
-import { saveLoginToRedux } from '../../actions/users/login_actions'
+import { saveLoginToRedux, saveLogUserToRedux } from '../../actions/users/login_actions'
 import {sendUserToDB, getUsersFromDB, checkUserInDB} from '../../api/users/users_api.js'
 import { saveUsersToRedux } from '../../actions/users/users_actions'
 import { sc2api } from '../../api/steemconnect/steem_api'
@@ -29,6 +29,7 @@ class Success extends Component {
 		localStorage.setItem('access_token', ACCESS_TOKEN)
     sc2api.setAccessToken(ACCESS_TOKEN)
     localStorage.setItem('username', USERNAME)
+    this.props.saveLogUserToRedux(USERNAME)
     checkUserInDB({username: USERNAME})
       .then((data) => {
         if ( data.length === 0 ) {
@@ -77,6 +78,7 @@ Success.propTypes = {
 	history: PropTypes.object.isRequired,
   saveUsersToRedux: PropTypes.func.isRequired,
   saveLoginToRedux: PropTypes.func.isRequired,
+  saveLogUserToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -98,6 +100,7 @@ export default withRouter(
 	connect(mapReduxToProps, {
     saveLoginToRedux,
     saveUsersToRedux,
+    saveLogUserToRedux,
 	})(RadiumHOC)
 )
 

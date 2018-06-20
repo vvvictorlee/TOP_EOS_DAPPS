@@ -8,7 +8,7 @@ import { saveVotesToRedux } from '../actions/votes/votes_actions'
 import { savePostsToRedux, saveTopPostsToRedux, saveNewPostsToRedux } from '../actions/posts/posts_actions'
 import { saveEosPriceToRedux, saveEosCapToRedux } from '../actions/eosStats/eos_actions'
 import { saveUsersToRedux } from '../actions/users/users_actions'
-import { saveLoginToRedux } from '../actions/users/login_actions'
+import { saveLoginToRedux, saveLogUserToRedux } from '../actions/users/login_actions'
 import { saveCommentsToRedux } from '../actions/comments/comments_actions'
 import { getUsersFromDB, checkUserInDB } from '../api/users/users_api'
 import { getPostsFromDB } from '../api/posts/posts_api'
@@ -45,6 +45,7 @@ export default (ComposedComponent) => {
 			const username = localStorage.getItem('username')
 			const access_token = localStorage.getItem('access_token')
 			if ( username && access_token) {
+				this.props.saveLogUserToRedux(username)
 				checkUserInDB({username: username})
 		      .then((data) => {
 							console.log(data)
@@ -147,6 +148,7 @@ export default (ComposedComponent) => {
 		saveEosPriceToRedux: PropTypes.func.isRequired,
 		saveVotesToRedux: PropTypes.func.isRequired,
 		saveLoginToRedux: PropTypes.func.isRequired,
+		saveLogUserToRedux: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -174,6 +176,7 @@ export default (ComposedComponent) => {
 			saveCommentsToRedux,
 			saveComvotesToRedux,
 			saveLoginToRedux,
+			saveLogUserToRedux,
     })(AppRootMechanics)
 	)
 }
