@@ -13,8 +13,11 @@ export const GET_COMMENTS = 'GET_COMMENTS'
 
 export const GET_COMVOTES = 'GET_COMVOTES'
 
-//
+//user id
 export const LOGGED_IN = 'LOGGED_IN'
+
+//username
+export const LOGGED_USER = 'LOGGED_USER'
 
 export const SAVE_TOP_POSTS = 'SAVE_TOP_POSTS'
 

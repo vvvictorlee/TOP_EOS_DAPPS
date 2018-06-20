@@ -26,7 +26,7 @@ import { savePostsToRedux } from '../../actions/posts/posts_actions'
 import { sendPostToDB, getPostsFromDB } from '../../api/posts/posts_api.js'
 import { sc2api } from '../../api/steemconnect/steem_api'
 import validator from 'validator'
-
+const shortid = require('shortid')
 const FormItem = Form.Item
 const { TextArea } = Input
 
@@ -64,11 +64,22 @@ class CreatePost extends Component {
 
   submitPost(){
     const val = this.editUrl()
+
     if ( val && this.state.topPick !== '' && this.state.state !== 'Current State' && this.state.releaseDate !== '' && this.state.description !== '' && this.state.state !== 'State if DApp' && this.state.url !== '' && this.state.summary !== '') {
       this.setState({pressed: true})
+
       if (this.state.checkbox) {
-        sc2api.comment('', '', this.props.login, 'testing-tester', this.state.topPick, this.state.description, '', function (err, res) {
-          console.log(err, res)
+        const permLink = shortid.generate().toLowerCase()
+        console.log(permLink)
+        sc2api.comment('', 'topeosdapps', this.props.loggedUser, permLink, this.state.topPick, this.state.description, { tags: ['eos', 'top', 'dapp'], app: 'topeosdapps' },
+          function (err, res) {
+            if (err){
+              console.log(err.error_description)
+              message.error('Steemit blockchain only allows a new post every 5 minutes')
+            }
+            else {
+              console.log(res)
+            }
           }
         )
       }
@@ -188,7 +199,7 @@ class CreatePost extends Component {
   							/>
 						</FormItem>
             <FormItem>
-              <Checkbox onChange={() => this.setState({checkbox: !this.state.checkbox})} defaultChecked={false} disabled>Generate post onto the Steem blockchain (Disabled temporarily)</Checkbox>
+              <Checkbox onChange={() => this.setState({checkbox: !this.state.checkbox})} defaultChecked={false} >Generate post onto the Steem blockchain</Checkbox>
             </FormItem>
 						<Button icon={this.state.pressed ? 'loading' : 'down'} disabled={this.state.pressed ? true : false} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitPost()}>Submit</Button>
 					</div>
@@ -203,6 +214,7 @@ class CreatePost extends Component {
 CreatePost.propTypes = {
 	history: PropTypes.object.isRequired,
   savePostsToRedux: PropTypes.func.isRequired,
+  loggedUser: PropTypes.string.isRequired,
   login: PropTypes.string.isRequired,
 }
 
@@ -218,6 +230,7 @@ const RadiumHOC = Radium(CreatePost)
 const mapReduxToProps = (redux) => {
 	return {
     login: redux.login.loggedIn,
+    loggedUser: redux.login.loggedUser,
 	}
 }
 

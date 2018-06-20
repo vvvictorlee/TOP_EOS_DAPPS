@@ -1,9 +1,11 @@
 import {
   LOGGED_IN,
+  LOGGED_USER
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
   loggedIn: '',
+  loggedUser: '',
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -13,6 +15,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loggedIn: action.payload,
+      }
+    case LOGGED_USER:
+      return {
+        ...state,
+        loggedUser: action.payload,
       }
 		default:
 			return {

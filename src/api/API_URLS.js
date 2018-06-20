@@ -1,5 +1,5 @@
 
-  export const POSTGRES_DB = 'https://asodnvqowrnvfev.website:8888'
+export const POSTGRES_DB = 'https://asodnvqowrnvfev.website:8888'
 
 //export const POSTGRES_DB = 'https://35.196.20.125:8888'
 
