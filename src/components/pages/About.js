@@ -33,7 +33,13 @@ class About extends Component {
 					<div style={comStyles().postsContainer}>
 						<div style={{marginTop: '3%', marginBottom: '3%'}}>
 							List of top rated decentralised applications on the <a href='https://eos.io'>EOS</a> blockchain. <br/>
-							Log in with <a href='https://steemit.com'>Steemit</a> account to Vote for applications.
+							Log in with <a href='https://steemit.com'>Steemit</a> to Post and Vote for applications. <br/><br/>
+							-- INTEGRATIONS --<br/>
+							SteemConnect login <br/>
+							Option to generate post onto Steemit blockchain <br/>
+							Votes on steemit posts at 100% weight <br/><br/>
+							-- CONTACT -- <br/>
+							Email: info@topeosdapps.com
 						</div>
 					</div>
 				</div>

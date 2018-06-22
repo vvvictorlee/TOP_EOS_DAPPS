@@ -37,7 +37,7 @@ class CreatePost extends Component {
 		super()
 		this.state = {
 				topPick: '',
-        releaseDate: '',
+        releaseDate: null,
         description: '',
         pressed: false,
         state: 'Current State',
@@ -62,16 +62,26 @@ class CreatePost extends Component {
     }
   }
 
+  checkDuplicate() {
+    if (this.props.allPosts.map((post) => post.description == this.state.description).includes(true)){
+      console.log(this.props.allPosts.map((post) => post.description == this.state.description))
+      message.warning('Duplicate post')
+    }
+    else {
+      return 'good'
+    }
+  }
+
   submitPost(){
     const val = this.editUrl()
+    const check = this.checkDuplicate()
 
-    if ( val && this.state.topPick !== '' && this.state.state !== 'Current State' && this.state.releaseDate !== '' && this.state.description !== '' && this.state.state !== 'State if DApp' && this.state.url !== '' && this.state.summary !== '') {
+    if ( check && val && this.state.topPick !== '' && this.state.state !== 'Current State' && this.state.description !== '' && this.state.url !== '' && this.state.summary !== '') {
       this.setState({pressed: true})
-
+      const permLink = shortid.generate().toLowerCase()
       if (this.state.checkbox) {
-        const permLink = shortid.generate().toLowerCase()
         console.log(permLink)
-        sc2api.comment('', 'topeosdapps', this.props.loggedUser, permLink, this.state.topPick, this.state.description, { tags: ['eos', 'top', 'dapp'], app: 'topeosdapps' },
+        sc2api.comment('', 'topeosdapps', this.props.loggedUser, permLink, this.state.topPick, this.state.description, { tags: ['eos', 'top', 'dapp', 'topeosdapps', 'blockchain'], app: 'topeosdapps' },
           function (err, res) {
             if (err){
               console.log(err.error_description)
@@ -92,6 +102,7 @@ class CreatePost extends Component {
         state: this.state.state,
         url: val,
         steemlink: this.state.checkbox,
+        permlink: permLink,
       })
       .then((data) => {
         return getPostsFromDB()
@@ -109,7 +120,7 @@ class CreatePost extends Component {
 
     }
     else {
-      if (val) {
+      if (val && check) {
         message.warning('Missing inputs')
       }
     }
@@ -216,6 +227,7 @@ CreatePost.propTypes = {
   savePostsToRedux: PropTypes.func.isRequired,
   loggedUser: PropTypes.string.isRequired,
   login: PropTypes.string.isRequired,
+  allPosts: PropTypes.array.isRequired,
 }
 
 // for all optional props, define a default value
@@ -231,6 +243,7 @@ const mapReduxToProps = (redux) => {
 	return {
     login: redux.login.loggedIn,
     loggedUser: redux.login.loggedUser,
+    allPosts: redux.posts.allPosts,
 	}
 }
 
