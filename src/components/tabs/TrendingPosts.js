@@ -16,7 +16,9 @@ import { getPostsFromDB } from '../../api/posts/posts_api'
 import { getVotesFromDB } from '../../api/votes/votes_api'
 import { savePostsToRedux, saveSelectedPostToRedux } from '../../actions/posts/posts_actions'
 import { saveVotesToRedux } from '../../actions/votes/votes_actions'
+import { sc2api } from '../../api/steemconnect/steem_api'
 import moment from 'moment'
+
 
 class TrendingPosts extends Component {
 
@@ -44,14 +46,24 @@ class TrendingPosts extends Component {
     })
   }
 
-  submitVote(v){
+  submitVote(v, auth, steemlink, plink){
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
       }
       else {
         console.log('votesubmitted')
-
+        if (steemlink) {
+          console.log(plink)
+          sc2api.vote(this.props.loggedUser, auth, plink, 10000, function (err, res) {
+            if (err){
+              console.log(err.error_description)
+            }
+            else {
+              console.log(res)
+            }
+          })
+        }
         sendVotesToDB({
           user_id: this.props.login,
           post_id: v
@@ -88,6 +100,12 @@ class TrendingPosts extends Component {
     this.props.history.push('/Post')
   }
 
+  getSite(url) {
+    console.log(url)
+    const newurl = new URL(url)
+    window.open(newurl)
+  }
+
 	render() {
     const loadMore = this.state.showLoadingMore ? (
       <div style={{ textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px' }}>
@@ -110,17 +128,17 @@ class TrendingPosts extends Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a href={item.url} target='_blank' >Site</a>,
-                    <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
+                    <a onClick={() => this.getSite(item.url)} >Site</a>,
+                    <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id, item.username, item.steemlink, item.permlink)}>
                       &nbsp;{item.num_votes}
                     </Button>
                   ]}>
                   <List.Item.Meta
                     avatar={<Avatar src={`https://img.busy.org/@${item.username}`} />}
-                    title={<a onClick={(e) => this.changeSelected(item)}> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/>{moment(item.project_release).format("MMM Do YY")} <br/> {item.summary} </a>}
+                    title={<a onClick={(e) => this.changeSelected(item)}> <b>{item.title}</b> - <Tag color={this.selectColor(item)}>{item.state}</Tag><br/> {item.summary} </a>}
                     description={item.description}
                   />
-                  <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")}</center></div>
+                  <div><center> By: {item.username} <br/> Posted: {moment(item.created_at).format("MMM Do YY")} <br/>Release date: {item.project_release ? moment(item.project_release).format("MMM Do YY") : 'TBA'}</center></div>
                 </List.Item>
               )}
             />
@@ -154,6 +172,7 @@ const mapReduxToProps = (redux) => {
   return {
     allPosts: redux.posts.allPosts,
     login: redux.login.loggedIn,
+    loggedUser: redux.login.loggedUser,
     allVotes: redux.votes.allVotes,
 	}
 }

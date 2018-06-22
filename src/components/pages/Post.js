@@ -18,7 +18,7 @@ import { sendComvoteToDB } from '../../api/votes/comvotes_api'
 
 import { getPostsFromDB } from '../../api/posts/posts_api'
 import { getVotesFromDB } from '../../api/votes/votes_api'
-
+import { sc2api } from '../../api/steemconnect/steem_api'
 
 import { savePostsToRedux, saveSelectedPostToRedux } from '../../actions/posts/posts_actions'
 import { saveCommentsToRedux } from '../../actions/comments/comments_actions'
@@ -77,14 +77,24 @@ class Post extends Component {
     }
   }
 
-  submitVote(v){
+  submitVote(v, auth, steemlink, plink){
     if (this.props.login) {
       if (this.props.allVotes.filter((vote) => vote.post_id == v && vote.user_id == this.props.login).length > 0) {
         message.warning('Cannot double vote!')
       }
       else {
         console.log('votesubmitted')
-
+        if (steemlink) {
+          console.log(plink)
+          sc2api.vote(this.props.loggedUser, auth, plink, 10000, function (err, res) {
+            if (err){
+              console.log(err.error_description)
+            }
+            else {
+              console.log(res)
+            }
+          })
+        }
         sendVotesToDB({
           user_id: this.props.login,
           post_id: v
@@ -139,7 +149,7 @@ class Post extends Component {
                   <List.Item
                     actions={[
                       <a href={item.url} >Site</a>,
-                      <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id)}>
+                      <Button icon={this.state.pressed ? 'like-o' : 'like'} type={this.state.pressed ? 'default' : 'primary'} onClick={() => this.submitVote(item.post_id, item.username, item.steemlink, item.permlink)}>
                         &nbsp;{item.num_votes}
                       </Button>
                     ]}>
@@ -196,9 +206,8 @@ class Post extends Component {
 				</div>
 
 				<center style={{marginBottom: '1%'}}>
-					Donations <br/>
-					BTC: skjdnflsmdf <br/>
-					EOS: jaksdnasdna
+					- Donations -<br/>
+					BTC: 35DErwGr4FxTox6LHArDefgz9XLFy8Hsx4  <br/>
 				</center>
 			</div>
 		)
@@ -235,6 +244,7 @@ const mapReduxToProps = (redux) => {
     comments: redux.comments.allComments,
     allComvotes: redux.comvotes.allComvotes,
     allVotes: redux.votes.allVotes,
+    loggedUser: redux.login.loggedUser,
 	}
 }
 
