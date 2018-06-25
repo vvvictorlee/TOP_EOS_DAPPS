@@ -8,7 +8,7 @@
     "start-http": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --watch --port 5001",
     "dev": "NODE_ENV=development nodemon --harmony server.js",
     "prod": "NODE_ENV=production nodemon --harmony server.js",
-    "build": "webpack -p"
+    "build": "webpack"
   },
   "keywords": [],
   "author": "Kangzeroo",
@@ -76,6 +76,7 @@
     "rxjs": "5.4.0",
     "sc2-sdk": "^1.0.2",
     "shortid": "^2.2.8",
+    "uglifyjs-webpack-plugin": "^1.2.6",
     "uuid": "3.0.1",
     "validator": "^10.3.0"
   }
